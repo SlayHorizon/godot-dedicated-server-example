@@ -3,9 +3,7 @@ extends Node
 const SERVER_PORT: int = 6007
 const MAX_PEERS: int = 4
 
-var player_list: Dictionary
-
-var peer : ENetMultiplayerPeer
+var peer: ENetMultiplayerPeer
 
 func _ready() -> void:
 	start_server()
@@ -27,7 +25,7 @@ func _peer_disconnected(peer_id) -> void:
 @rpc("any_peer", "call_remote", "reliable", 0)
 func ping(msec: float) -> void:
 	var peer_id := multiplayer.get_remote_sender_id() as int
-	rpc_id(peer_id, "pong", msec)
+	pong.rpc_id(peer_id, msec)
 
 @rpc("authority", "call_remote", "reliable", 0)
 func pong(_msec: float) -> void:
