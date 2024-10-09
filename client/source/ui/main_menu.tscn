@@ -1,0 +1,73 @@
+[gd_scene load_steps=2 format=3 uid="uid://cv7qkkh1seily"]
+
+[ext_resource type="Script" path="res://source/ui/main_menu.gd" id="1_q7eah"]
+
+[node name="MainMenu" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_q7eah")
+
+[node name="CenterContainer" type="CenterContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="CenterContainer"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="MessageStatusLabel" type="Label" parent="CenterContainer/VBoxContainer"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(150, 23)
+layout_mode = 2
+text = "Offline."
+horizontal_alignment = 1
+
+[node name="Buttons" type="VBoxContainer" parent="CenterContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+alignment = 1
+
+[node name="ConnectButton" type="Button" parent="CenterContainer/VBoxContainer/Buttons"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(142, 31)
+layout_mode = 2
+text = "Connect"
+
+[node name="DisconnectButton" type="Button" parent="CenterContainer/VBoxContainer/Buttons"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(142, 31)
+layout_mode = 2
+disabled = true
+text = "Disconnect"
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_top = -58.0
+offset_right = 72.0
+grow_vertical = 0
+
+[node name="PingLabel" type="Label" parent="VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="PingButton" type="Button" parent="VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+disabled = true
+text = "Ping"
+
+[connection signal="pressed" from="CenterContainer/VBoxContainer/Buttons/ConnectButton" to="." method="_on_connect_button_pressed"]
+[connection signal="pressed" from="CenterContainer/VBoxContainer/Buttons/DisconnectButton" to="." method="_on_disconnect_button_pressed"]
+[connection signal="pressed" from="VBoxContainer/PingButton" to="." method="_on_ping_button_pressed"]
