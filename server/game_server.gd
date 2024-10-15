@@ -27,7 +27,10 @@ func start_server() -> void:
 	multiplayer.peer_connected.connect(self._on_peer_connected)
 	multiplayer.peer_disconnected.connect(self._on_peer_disconnected)
 	
-	peer.create_server(SERVER_PORT, MAX_PEERS)
+	var error: Error = peer.create_server(SERVER_PORT, MAX_PEERS)
+	if error:
+		print(error_string(error))
+		return
 	multiplayer.set_multiplayer_peer(peer)
 
 

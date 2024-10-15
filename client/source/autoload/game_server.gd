@@ -50,7 +50,10 @@ func connect_to_server() -> void:
 	multiplayer.connection_failed.connect(self._on_connection_failed)
 	multiplayer.server_disconnected.connect(self._on_server_disconnected)
 	
-	peer.create_client(SERVER_ADDRESS, SERVER_PORT)
+	var error: Error = peer.create_client(SERVER_ADDRESS, SERVER_PORT)
+	if error:
+		print(error_string(error))
+		return
 	multiplayer.set_multiplayer_peer(peer)
 
 
