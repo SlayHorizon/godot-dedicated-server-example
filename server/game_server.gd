@@ -6,9 +6,9 @@ extends Node
 # Server configuration.
 ## The port the server listens to. Ensure it's opened, especially for remote testing.
 const SERVER_PORT: int = 6007
-
 ## The maximum number of peers allowed to connect at once.
 const MAX_PEERS: int = 4
+
 
 # ENet-based peer for managing client-server communication over UDP.
 var peer: ENetMultiplayerPeer
@@ -16,21 +16,23 @@ var peer: ENetMultiplayerPeer
 
 # Called when the node is added to the scene tree and ready to run.
 func _ready() -> void:
+	# Setup multiplayer signals.
+	multiplayer.peer_connected.connect(self._on_peer_connected)
+	multiplayer.peer_disconnected.connect(self._on_peer_disconnected)
+	
 	start_server()
 
 
 # Starts the server and sets up peer connections.
 func start_server() -> void:
-	print("Starting server.")
+	print("Starting server that listens to connections via port %d." % SERVER_PORT)
 	peer = ENetMultiplayerPeer.new()
 	
-	multiplayer.peer_connected.connect(self._on_peer_connected)
-	multiplayer.peer_disconnected.connect(self._on_peer_disconnected)
-	
-	var error: Error = peer.create_server(SERVER_PORT, MAX_PEERS)
-	if error:
-		print(error_string(error))
+	var error := peer.create_server(SERVER_PORT, MAX_PEERS)
+	if error != OK:
+		printerr("Error while creating server (%s)" % error_string(error))
 		return
+	
 	multiplayer.set_multiplayer_peer(peer)
 
 

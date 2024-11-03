@@ -23,6 +23,14 @@ var is_connected_to_server := false:
 		connection_changed.emit(value)
 
 
+# Called when the node is added to the scene tree and ready to run.
+func _ready() -> void:
+	# Setup multiplayer signals.
+	multiplayer.connected_to_server.connect(self._on_connection_succeeded)
+	multiplayer.connection_failed.connect(self._on_connection_failed)
+	multiplayer.server_disconnected.connect(self._on_server_disconnected)
+
+
 # Called when the client successfully connects to the server.
 func _on_connection_succeeded() -> void:
 	print("Successfully connected to the server as %d!" % multiplayer.get_unique_id())
@@ -43,17 +51,14 @@ func _on_server_disconnected() -> void:
 
 # Initiates a connection to the server.
 func connect_to_server() -> void:
-	print("Starting connection to the server.")
+	print("Starting connection to the server at %s and on port %s." % [SERVER_ADDRESS, SERVER_PORT])
 	peer = ENetMultiplayerPeer.new()
 	
-	multiplayer.connected_to_server.connect(self._on_connection_succeeded)
-	multiplayer.connection_failed.connect(self._on_connection_failed)
-	multiplayer.server_disconnected.connect(self._on_server_disconnected)
-	
-	var error: Error = peer.create_client(SERVER_ADDRESS, SERVER_PORT)
-	if error:
-		print(error_string(error))
+	var error := peer.create_client(SERVER_ADDRESS, SERVER_PORT)
+	if error != OK:
+		printerr("Error while creating client (%s)." % error_string(error))
 		return
+	
 	multiplayer.set_multiplayer_peer(peer)
 
 
@@ -65,9 +70,6 @@ func disconnect_from_server() -> void:
 
 # Closes the active connection and resets the peer.
 func close_connection() -> void:
-	multiplayer.connected_to_server.disconnect(self._on_connection_succeeded)
-	multiplayer.connection_failed.disconnect(self._on_connection_failed)
-	multiplayer.server_disconnected.disconnect(self._on_server_disconnected)
 	multiplayer.set_multiplayer_peer(null)
 	peer.close()
 	is_connected_to_server = false
