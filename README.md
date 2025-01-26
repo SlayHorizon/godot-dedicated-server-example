@@ -1,5 +1,5 @@
 # Godot Dedicated Server Example 
-*(Compatible with Godot 4.x - 4.3)*
+*(Compatible with Godot 4.x - 4.4)*
 
 This repository contains straightforward, minimal and functional examples of a dedicated server
 and client built with Godot, organized into two separate projects.
@@ -11,6 +11,7 @@ To get started with these examples, simply clone the repository and open each pr
 
 ## Documentation 📚
 For further information, the official Godot documentation is an excellent resource:
+- **[Networking](https://docs.godotengine.org/en/stable/tutorials/networking/index.html)**
 - **[High-Level Multiplayer](https://docs.godotengine.org/en/stable/tutorials/networking/high_level_multiplayer.html)**
 <br/><br/>
 
