@@ -3,6 +3,7 @@ extends Node
 ## Focuses on maintaining a clean and minimal structure,
 ## handling only connection and authentication
 
+
 # Signals for UI to update connection and latency status.
 signal connection_changed(connected_to_server: bool)
 signal ping_received(latency: float)

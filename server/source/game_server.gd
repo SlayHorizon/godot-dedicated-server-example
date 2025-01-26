@@ -3,12 +3,12 @@ extends Node
 ## Focuses on maintaining a clean and minimal structure,
 ## handling only connection and authentication
 
+
 # Server configuration.
 ## The port the server listens to. Ensure it's opened, especially for remote testing.
 const SERVER_PORT: int = 6007
 ## The maximum number of peers allowed to connect at once.
 const MAX_PEERS: int = 4
-
 
 # ENet-based peer for managing client-server communication over UDP.
 var peer: ENetMultiplayerPeer
