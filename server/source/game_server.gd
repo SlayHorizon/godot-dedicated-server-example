@@ -1,5 +1,5 @@
 extends Node
-## Game Server side autoload.
+## Game Server.
 ## Focuses on maintaining a clean and minimal structure,
 ## handling only connection and authentication
 
@@ -28,7 +28,7 @@ func start_server() -> void:
 	print("Starting server that listens to connections via port %d." % SERVER_PORT)
 	peer = ENetMultiplayerPeer.new()
 	
-	var error := peer.create_server(SERVER_PORT, MAX_PEERS)
+	var error: Error = peer.create_server(SERVER_PORT, MAX_PEERS)
 	if error != OK:
 		printerr("Error while creating server (%s)" % error_string(error))
 		return
@@ -48,12 +48,12 @@ func _on_peer_disconnected(peer_id: int) -> void:
 
 # Remote procedure call (RPC) to receive ping from clients.
 @rpc("any_peer", "call_remote", "reliable", 0)
-func ping(msec: float) -> void:
-	var peer_id := multiplayer.get_remote_sender_id() as int
-	pong.rpc_id(peer_id, msec)
+func ping(sent_time_ms: float) -> void:
+	var peer_id: int = multiplayer.get_remote_sender_id()
+	pong.rpc_id(peer_id, sent_time_ms)
 
 
 # RPC response to handle pong from clients.
 @rpc("authority", "call_remote", "reliable", 0)
-func pong(_msec: float) -> void:
+func pong(_sent_time_ms: float) -> void:
 	pass

@@ -16,6 +16,7 @@ func _on_disconnect_button_pressed() -> void:
 
 
 func _on_ping_button_pressed() -> void:
+	print("Ping button pressed.")
 	GameServer.ping.rpc_id(1, Time.get_ticks_msec())
 
 
@@ -29,7 +30,8 @@ func _on_connection_changed(connection_status: bool) -> void:
 		%ConnectButton.disabled = false
 		%DisconnectButton. disabled = true
 		%PingButton.disabled = true
+		%PingLabel.text = ""
 
 
-func _on_ping_received(ping: float) -> void:
-	%PingLabel.text = "Ping = %.2fms" % ping
+func _on_ping_received(ping_ms: float) -> void:
+	%PingLabel.text = "Ping = %.2fms" % ping_ms

@@ -12,13 +12,13 @@ signal ping_received(latency: float)
 ## The port the server listens to.
 const SERVER_PORT: int = 6007
 ## The server address. Use "127.0.0.1" for local testing.
-const SERVER_ADDRESS := "127.0.0.1"
+const SERVER_ADDRESS: String = "127.0.0.1"
 
 # ENet-based peer for managing client-server communication over UDP.
 var peer: ENetMultiplayerPeer
 
 ## True if the client is connected to the server.
-var is_connected_to_server := false:
+var is_connected_to_server: bool = false:
 	set(value):
 		is_connected_to_server = value
 		connection_changed.emit(value)
@@ -55,7 +55,7 @@ func connect_to_server() -> void:
 	print("Starting connection to the server at %s and on port %s." % [SERVER_ADDRESS, SERVER_PORT])
 	peer = ENetMultiplayerPeer.new()
 	
-	var error := peer.create_client(SERVER_ADDRESS, SERVER_PORT)
+	var error: Error = peer.create_client(SERVER_ADDRESS, SERVER_PORT)
 	if error != OK:
 		printerr("Error while creating client (%s)." % error_string(error))
 		return
@@ -78,12 +78,17 @@ func close_connection() -> void:
 
 # Remote procedure call (RPC) to send ping.
 @rpc("any_peer", "call_remote", "reliable", 0)
-func ping(_msec: float) -> void:
+func ping(_sent_time_ms: float) -> void:
 	pass
 
 
-# RPC response to handle pong and emit latency.
+# RPC response to handle pong and emit latency value to GUI.
 @rpc("authority", "call_remote", "reliable", 0)
-func pong(msec: float) -> void:
-	var latency = (Time.get_ticks_msec() - msec) / 1000.0 as float
-	ping_received.emit(latency)
+func pong(sent_time_ms: float) -> void:
+	# Round-Trip Time (RTT) - Client -> Server -> Client
+	var rtt_ms: float = Time.get_ticks_msec() - sent_time_ms
+	# One-way Latency - approximate: Client -> Server
+	var ping_ms: float = rtt_ms * 0.5
+	
+	ping_received.emit(ping_ms)
+	print("Ping received: estimated one-way latency = %.2fms." % ping_ms)
