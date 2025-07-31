@@ -1,11 +1,12 @@
 extends Node
 ## Game Server/Client side autoload.
 ## Focuses on maintaining a clean and minimal structure,
-## handling only connection and authentication
+## handling only connection and authentication.
 
 
-# Signals for UI to update connection and latency status.
+## Signal for UI to update connection status.
 signal connection_changed(connected_to_server: bool)
+## Signal for UI to update latency info.
 signal ping_received(latency: float)
 
 # Server configuration.
@@ -14,7 +15,7 @@ const SERVER_PORT: int = 6007
 ## The server address. Use "127.0.0.1" for local testing.
 const SERVER_ADDRESS: String = "127.0.0.1"
 
-# ENet-based peer for managing client-server communication over UDP.
+## ENet-based peer for managing client-server communication over UDP.
 var peer: ENetMultiplayerPeer
 
 ## True if the client is connected to the server.
@@ -27,30 +28,30 @@ var is_connected_to_server: bool = false:
 # Called when the node is added to the scene tree and ready to run.
 func _ready() -> void:
 	# Setup multiplayer signals.
-	multiplayer.connected_to_server.connect(self._on_connection_succeeded)
-	multiplayer.connection_failed.connect(self._on_connection_failed)
-	multiplayer.server_disconnected.connect(self._on_server_disconnected)
+	multiplayer.connected_to_server.connect(_on_connection_succeeded)
+	multiplayer.connection_failed.connect(_on_connection_failed)
+	multiplayer.server_disconnected.connect(_on_server_disconnected)
 
 
-# Called when the client successfully connects to the server.
+## Called when the client successfully connects to the server.
 func _on_connection_succeeded() -> void:
 	print("Successfully connected to the server as %d!" % multiplayer.get_unique_id())
 	is_connected_to_server = true
 
 
-# Called when the connection attempt fails.
+## Called when the connection attempt fails.
 func _on_connection_failed() -> void:
 	print("Failed to connect to the server.")
 	close_connection()
 
 
-# Called when the server disconnects.
+## Called when the server disconnects.
 func _on_server_disconnected() -> void:
 	print("Server disconnected.")
 	close_connection()
 
 
-# Initiates a connection to the server.
+## Initiates a connection to the server.
 func connect_to_server() -> void:
 	print("Starting connection to the server at %s and on port %s." % [SERVER_ADDRESS, SERVER_PORT])
 	peer = ENetMultiplayerPeer.new()
@@ -63,26 +64,26 @@ func connect_to_server() -> void:
 	multiplayer.set_multiplayer_peer(peer)
 
 
-# Disconnects the client from the server.
+## Disconnects the client from the server.
 func disconnect_from_server() -> void:
 	print("Disconnect from server.")
 	close_connection()
 
 
-# Closes the active connection and resets the peer.
+## Closes the active connection and resets the peer.
 func close_connection() -> void:
 	multiplayer.set_multiplayer_peer(null)
 	peer.close()
 	is_connected_to_server = false
 
 
-# Remote procedure call (RPC) to send ping.
+## Remote procedure call (RPC) to send ping.
 @rpc("any_peer", "call_remote", "reliable", 0)
 func ping(_sent_time_ms: float) -> void:
 	pass
 
 
-# RPC response to handle pong and emit latency value to GUI.
+## RPC response to handle pong and emit latency value to GUI.
 @rpc("authority", "call_remote", "reliable", 0)
 func pong(sent_time_ms: float) -> void:
 	# Round-Trip Time (RTT) - Client -> Server -> Client

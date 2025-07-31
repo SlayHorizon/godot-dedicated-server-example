@@ -2,8 +2,8 @@ extends Control
 
 
 func _ready() -> void:
-	GameServer.connection_changed.connect(self._on_connection_changed)
-	GameServer.ping_received.connect(self._on_ping_received)
+	GameServer.connection_changed.connect(_on_connection_changed)
+	GameServer.ping_received.connect(_on_ping_received)
 
 
 func _on_connect_button_pressed() -> void:
@@ -17,6 +17,7 @@ func _on_disconnect_button_pressed() -> void:
 
 func _on_ping_button_pressed() -> void:
 	print("Ping button pressed.")
+	# rpc_id 1 always target the server / host.
 	GameServer.ping.rpc_id(1, Time.get_ticks_msec())
 
 
